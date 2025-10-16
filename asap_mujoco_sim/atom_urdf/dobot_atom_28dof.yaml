@@ -1,0 +1,138 @@
+humanoid_type: dobot_atom_28dof
+bias_offset: False
+has_self_collision: True
+has_mesh: False
+has_jt_limit: False
+has_dof_subset: True
+has_upright_start: True
+has_smpl_pd_offset: False
+remove_toe: False # For humanoid's geom toe
+motion_sym_loss: False
+sym_loss_coef: 1
+big_ankle: True
+
+has_shape_obs: false
+has_shape_obs_disc: false
+has_shape_variation: False
+
+masterfoot: False
+freeze_toe: false
+freeze_hand: False
+box_body: True
+real_weight: True
+real_weight_porpotion_capsules: True
+real_weight_porpotion_boxes: True
+
+body_names: ['pelvis', 'left_hip_pitch_link', 'left_hip_roll_link', 'left_hip_yaw_link', 'left_knee_link', 'left_ankle_pitch_link', 'left_ankle_roll_link', 
+            'right_hip_pitch_link', 'right_hip_roll_link', 'right_hip_yaw_link', 'right_knee_link', 'right_ankle_pitch_link', 'right_ankle_roll_link',
+            'torso_link', 'left_shoulder_pitch_link', 'left_shoulder_roll_link', 'left_shoulder_yaw_link', 'left_elbow_pitch_link', 'left_elbow_roll_link',
+            'left_wrist_pitch_link', 'left_wrist_yaw_link',
+            'right_shoulder_pitch_link', 'right_shoulder_roll_link', 'right_shoulder_yaw_link', 'right_elbow_pitch_link', 'right_elbow_roll_link',
+            'right_wrist_pitch_link', 'right_wrist_yaw_link',
+            ]
+
+limb_weight_group: ['left_hip_pitch_link', 'left_hip_roll_link', 'left_hip_yaw_link', 'left_knee_link', 'left_ankle_pitch_link', 'left_ankle_roll_link', 
+            'right_hip_pitch_link', 'right_hip_roll_link', 'right_hip_yaw_link', 'right_knee_link', 'right_ankle_pitch_link', 'right_ankle_roll_link',
+            'torso_link', 'left_shoulder_pitch_link', 'left_shoulder_roll_link', 'left_shoulder_yaw_link', 'left_elbow_pitch_link', 'left_elbow_roll_link',
+            'left_wrist_pitch_link', 'left_wrist_yaw_link',
+            'right_shoulder_pitch_link', 'right_shoulder_roll_link', 'right_shoulder_yaw_link', 'right_elbow_pitch_link', 'right_elbow_roll_link',
+            'right_wrist_pitch_link', 'right_wrist_yaw_link',
+            ]
+
+dof_names: [
+    # 根关节（自由关节，整个身体的基础）
+    #"floating_base_joint",  # 骨盆处的6自由度自由关节 要不要写这个要考虑
+    
+    # 左腿关节（按运动链顺序：髋→膝→踝）
+    "left_hip_pitch_joint",   # 左髋俯仰关节
+    "left_hip_roll_joint",    # 左髋横滚关节
+    "left_hip_yaw_joint",     # 左髋偏航关节
+    "left_knee_joint",        # 左膝关节
+    "left_ankle_pitch_joint", # 左踝俯仰关节
+    "left_ankle_roll_joint",  # 左踝横滚关节
+    
+    # 右腿关节（与左腿对称）
+    "right_hip_pitch_joint",  # 右髋俯仰关节
+    "right_hip_roll_joint",   # 右髋横滚关节
+    "right_hip_yaw_joint",    # 右髋偏航关节
+    "right_knee_joint",       # 右膝关节
+    "right_ankle_pitch_joint", # 右踝俯仰关节
+    "right_ankle_roll_joint", # 右踝横滚关节
+    
+    # 腰部关节
+    "waist_yaw_joint",        # 腰部偏航关节（连接骨盆与躯干）
+    
+    # 左肩及左臂关节（肩→肘→腕）
+    "left_shoulder_pitch_joint", # 左肩俯仰关节
+    "left_shoulder_roll_joint",  # 左肩横滚关节
+    "left_shoulder_yaw_joint",   # 左肩偏航关节
+    "left_elbow_pitch_joint",    # 左肘俯仰关节
+    "left_elbow_roll_joint",     # 左肘横滚关节
+    "left_wrist_pitch_joint",    # 左手腕俯仰关节
+    "left_wrist_yaw_joint",      # 左手腕偏航关节
+    
+    # 右肩及右臂关节（与左臂对称）
+    "right_shoulder_pitch_joint", # 右肩俯仰关节
+    "right_shoulder_roll_joint", # 右肩横滚关节
+    "right_shoulder_yaw_joint",  # 右肩偏航关节
+    "right_elbow_pitch_joint",   # 右肘俯仰关节
+    "right_elbow_roll_joint",    # 右肘横滚关节
+    "right_wrist_pitch_joint",   # 右手腕俯仰关节
+    "right_wrist_yaw_joint"      # 右手腕偏航关节
+]
+
+right_foot_name: 'r_foot_roll'
+left_foot_name: 'l_foot_roll'
+
+asset:
+  assetRoot: "./"
+  assetFileName: "description/robots/atom/atom.xml"
+  urdfFileName: "description/robots/atom/atom.xml"
+
+extend_config:
+  - joint_name: "left_hand_joint"
+    parent_name: "left_wrist_yaw_link"
+    pos: [ 0.05, 0.0, 0.0 ]
+    rot: [ 1.0, 0.0, 0.0, 0.0 ] # w x y z
+  - joint_name: "right_hand_joint"
+    parent_name: "right_wrist_yaw_link"
+    pos: [ 0.05, 0.0, 0.0 ]
+    rot: [ 1.0, 0.0, 0.0, 0.0 ] # w x y z
+  - joint_name: "head_joint"
+    parent_name: "pelvis"
+    pos: [0.0, 0.0, 0.6]
+    rot: [1.0, 0.0, 0.0, 0.0]
+  - joint_name: "left_toe_joint"
+    parent_name: "left_ankle_roll_link"
+    pos: [ 0.15, 0., 0 ]    # 0.08  0  -0.06          # amass 0.04, -0.02, -0.02
+    rot: [ 1.0, 0.0, 0.0, 0.0 ] # w x y z
+  - joint_name: "right_toe_joint"
+    parent_name: "right_ankle_roll_link"
+    pos: [ 0.15, 0., 0 ]                              # amass 0.04, -0.02, -0.02 
+    rot: [ 1.0, 0.0, 0.0, 0.0 ] # w x y z
+
+base_link: "torso_link"
+joint_matches:
+- ["floating_base_joint", "Pelvis"]
+- ["left_hip_yaw_joint", "L_Hip"]
+- ["left_knee_joint", "L_Knee"]
+- ["left_ankle_pitch_joint", "L_Ankle"]
+- ["right_hip_yaw_joint", "R_Hip"]
+- ["right_knee_joint", "R_Knee"]
+- ["right_ankle_pitch_joint", "R_Ankle"]
+- ["left_shoulder_roll_joint", "L_Shoulder"]
+- ["left_elbow_pitch_joint", "L_Elbow"]
+- ["left_hand_joint", "L_Hand"]
+- ["right_shoulder_roll_joint", "R_Shoulder"]
+- ["right_elbow_pitch_joint", "R_Elbow"]
+- ["right_hand_joint", "R_Hand"]
+- ["left_toe_joint", "L_Toe"]
+- ["right_toe_joint", "R_Toe"]
+
+
+smpl_pose_modifier: #z_up Axis--->  y_up Axis
+  - Pelvis: "[np.pi/2, 0, np.pi/2]"
+  - L_Shoulder: "[0, 0, -np.pi/2]"
+  - R_Shoulder: "[0, 0, np.pi/2]"
+  - L_Elbow: "[0, -np.pi/2, 0]"
+  - R_Elbow: "[0, np.pi/2, 0]"
