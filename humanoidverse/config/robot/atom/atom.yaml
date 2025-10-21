@@ -304,7 +304,7 @@ robot:
       0.54,  # 11: right_ankle_roll
       
       # 腰部 (1 DOF)
-      0.25,  # 12: waist_yaw
+      0.01,  # 12: waist_yaw
       
       # 左臂 (7 DOF)
       0.25,  # 13: left_shoulder_pitch
