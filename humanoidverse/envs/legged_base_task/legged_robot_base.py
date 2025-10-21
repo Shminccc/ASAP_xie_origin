@@ -92,6 +92,30 @@ class LeggedRobotBase(BaseTask):
                     logger.warning(f"PD gain of joint {name} were not defined, setting them to zero")
                     raise ValueError(f"PD gain of joint {name} were not defined. Should be defined in the yaml file.")
         self.default_dof_pos = self.default_dof_pos.unsqueeze(0)
+        
+        # Initialize action_scale (support both scalar and per-joint array)
+        from omegaconf import ListConfig, DictConfig
+        if isinstance(self.config.robot.control.action_scale, (list, tuple, ListConfig)):
+            # Per-joint action scale
+            # Convert ListConfig to Python list if necessary
+            if isinstance(self.config.robot.control.action_scale, ListConfig):
+                action_scale_list = list(self.config.robot.control.action_scale)
+            else:
+                action_scale_list = self.config.robot.control.action_scale
+            
+            # Pre-expand to [num_envs, num_dof] for maximum performance (no broadcasting overhead)
+            action_scale_1d = torch.tensor(
+                action_scale_list, 
+                dtype=torch.float, 
+                device=self.device,
+                requires_grad=False
+            )
+            self.action_scale = action_scale_1d.unsqueeze(0).expand(self.num_envs, -1).contiguous()
+            logger.info(f"Using per-joint action_scale: min={action_scale_1d.min():.3f}, max={action_scale_1d.max():.3f}, shape={self.action_scale.shape}")
+        else:
+            # Scalar action scale (backward compatible)
+            self.action_scale = self.config.robot.control.action_scale
+            logger.info(f"Using uniform action_scale: {self.action_scale}")
         self._init_domain_rand_buffers()
 
         # for reward penalty curriculum
@@ -830,7 +854,7 @@ class LeggedRobotBase(BaseTask):
         Returns:
             [torch.Tensor]: Torques sent to the simulation
         """
-        actions_scaled = actions * self.config.robot.control.action_scale
+        actions_scaled = actions * self.action_scale
         control_type = self.config.robot.control.control_type
         if control_type=="P":
             torques = self._kp_scale * self.p_gains*(actions_scaled + self.default_dof_pos - self.simulator.dof_pos) - self._kd_scale * self.d_gains*self.simulator.dof_vel
